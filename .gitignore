@@ -20,3 +20,26 @@ __pycache__/
 # Runtime/debug outputs
 debug_maps/
 maps/
+
+# Generic C/C++ build outputs
+**/build/
+**/cmake-build-*/
+**/*.o
+**/*.so
+**/*.a
+**/*.out
+
+# Lidar SDK local build/cache
+third_party/unilidar_sdk2/**/build/
+third_party/unilidar_sdk2/**/*.o
+third_party/unilidar_sdk2/**/*.so
+third_party/unilidar_sdk2/**/*.a
+
+# Do not upload inner git backup
+third_party/unilidar_sdk2/.git_backup_unilidar/
+# Unilidar SDK build outputs
+third_party/unilidar_sdk2/unitree_lidar_sdk/bin/
+third_party/unilidar_sdk2/**/build/
+third_party/unilidar_sdk2/**/*.o
+third_party/unilidar_sdk2/**/*.so
+third_party/unilidar_sdk2/**/*.a
