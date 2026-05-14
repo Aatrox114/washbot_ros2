@@ -74,6 +74,7 @@ timeout 1s ros2 topic pub /cmd_vel geometry_msgs/msg/Twist \
 -r 10 || true
 
 echo "[7/7] 检查 /odom 是否有输出..."
+timeout 3s ros2 run tf2_ros tf2_echo odom base_link || true
 ros2 topic echo /odom --once
 
 echo ""
