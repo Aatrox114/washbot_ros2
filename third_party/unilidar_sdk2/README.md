@@ -21,3 +21,12 @@ cd ~/unilidar_sdk2/unitree_lidar_sdk/build
 ../bin/lidar_control_udp stop
 
 ../bin/lidar_control_udp start
+ros2 launch unitree_lidar_ros2 launch.py
+
+
+
+
+../bin/lidar_set_mode_udp 0
+../bin/lidar_set_mode_udp 1
+../bin/lidar_set_mode_udp 2
+../bin/lidar_set_mode_udp 16
