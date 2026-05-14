@@ -1,0 +1,275 @@
+<?xml version="1.0"?>
+<robot name="washbot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ================= 外观 STL 参数 ================= -->
+  <xacro:property name="mesh_scale" value="1.0"/>
+  <xacro:property name="mesh_x" value="0.0"/>
+  <xacro:property name="mesh_y" value="0.0"/>
+  <xacro:property name="mesh_z" value="0.0"/>
+  <xacro:property name="mesh_roll" value="0.0"/>
+  <xacro:property name="mesh_pitch" value="0.0"/>
+  <xacro:property name="mesh_yaw" value="0.0"/>
+
+  <!-- ================= 物理参数 ================= -->
+  <xacro:property name="base_mass" value="12.0"/>
+
+  <xacro:property name="lidar_radius" value="0.04"/>
+  <xacro:property name="lidar_height" value="0.06"/>
+  <xacro:property name="lidar_mass" value="0.2"/>
+  <xacro:property name="lidar_z" value="0.18"/>
+
+  <!-- 隐藏驱动轮：只负责 Gazebo 运动，不负责外观 -->
+  <xacro:property name="drive_wheel_radius" value="0.06"/>
+  <xacro:property name="drive_wheel_width" value="0.03"/>
+  <xacro:property name="drive_wheel_y" value="0.15"/>
+  <xacro:property name="drive_wheel_z" value="-0.07"/>
+  <xacro:property name="drive_wheel_mass" value="0.5"/>
+
+  <!-- ================= 颜色 ================= -->
+  <material name="gray">
+    <color rgba="0.5 0.5 0.5 1.0"/>
+  </material>
+
+  <material name="metal">
+    <color rgba="0.75 0.75 0.75 1.0"/>
+  </material>
+
+  <!-- ================= TF 根坐标 ================= -->
+  <link name="base_footprint"/>
+
+  <!-- ================= 主底盘：外观使用队友 STL ================= -->
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="${base_mass}"/>
+      <inertia ixx="0.12" ixy="0.0" ixz="0.0"
+               iyy="0.12" iyz="0.0"
+               izz="0.20"/>
+    </inertial>
+
+    <!-- 队友给的底盘外观 -->
+    <visual name="team_base_visual">
+      <origin xyz="${mesh_x} ${mesh_y} ${mesh_z}"
+              rpy="${mesh_roll} ${mesh_pitch} ${mesh_yaw}"/>
+      <geometry>
+        <mesh filename="file:///home/yuandong/ros2_ws/src/washbot_description/meshes/team_base_link.STL"
+              scale="${mesh_scale} ${mesh_scale} ${mesh_scale}"/>
+      </geometry>
+      <material name="metal"/>
+    </visual>
+
+    <!-- 物理碰撞体先继续用简化 box，别直接用 STL 做 collision -->
+    <collision name="base_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.36 0.36 0.26"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="base_footprint_to_base_link" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0.13" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ================= 隐藏左驱动轮：给 DiffDrive 用 ================= -->
+  <link name="left_drive_wheel_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="${drive_wheel_mass}"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+               iyy="0.001" iyz="0.0"
+               izz="0.001"/>
+    </inertial>
+
+    <collision name="left_drive_wheel_collision">
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="${drive_wheel_radius}" length="${drive_wheel_width}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="left_drive_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_drive_wheel_link"/>
+    <origin xyz="0 ${drive_wheel_y} ${drive_wheel_z}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- ================= 隐藏右驱动轮：给 DiffDrive 用 ================= -->
+  <link name="right_drive_wheel_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="${drive_wheel_mass}"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+               iyy="0.001" iyz="0.0"
+               izz="0.001"/>
+    </inertial>
+
+    <collision name="right_drive_wheel_collision">
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="${drive_wheel_radius}" length="${drive_wheel_width}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="right_drive_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_drive_wheel_link"/>
+    <origin xyz="0 -${drive_wheel_y} ${drive_wheel_z}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- ================= 顶部 GPU 雷达 ================= -->
+  <link name="lidar_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="${lidar_mass}"/>
+      <inertia ixx="0.0005" ixy="0.0" ixz="0.0"
+               iyy="0.0005" iyz="0.0"
+               izz="0.0005"/>
+    </inertial>
+
+    <visual name="lidar_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${lidar_radius}" length="${lidar_height}"/>
+      </geometry>
+      <material name="gray"/>
+    </visual>
+  </link>
+
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <origin xyz="0 0 ${lidar_z}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ================= Gazebo GPU 雷达传感器 ================= -->
+ <!-- ================= Gazebo 3D GPU 雷达传感器 ================= -->
+<gazebo reference="lidar_link">
+  <sensor name="lidar_sensor" type="gpu_lidar">
+    <pose>0 0 0 0 0 0</pose>
+    <always_on>true</always_on>
+    <update_rate>10</update_rate>
+    <visualize>true</visualize>
+
+    <!-- Gazebo 侧话题基础名 -->
+    <topic>scan</topic>
+    <frame_name>lidar_link</frame_name>
+
+    <lidar>
+      <scan>
+        <horizontal>
+          <samples>720</samples>
+          <resolution>0.01745</resolution>
+          <min_angle>-1.0472</min_angle>
+          <max_angle>1.0472</max_angle>
+        </horizontal>
+
+        <vertical>
+          <samples>16</samples>
+          <resolution>1</resolution>
+          <min_angle>0</min_angle>
+          <max_angle>0.5236</max_angle>
+        </vertical>
+      </scan>
+
+      <range>
+        <min>0.40</min>
+        <max>18.0</max>
+        <resolution>0.01</resolution>
+      </range>
+    </lidar>
+  </sensor>
+</gazebo>
+  <!-- ================= Gazebo 差速驱动插件 ================= -->
+  <gazebo>
+    <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
+      <left_joint>left_drive_wheel_joint</left_joint>
+      <right_joint>right_drive_wheel_joint</right_joint>
+
+      <wheel_separation>0.30</wheel_separation>
+      <wheel_radius>0.06</wheel_radius>
+
+      <topic>/cmd_vel</topic>
+      <odom_topic>/odom</odom_topic>
+      <tf_topic>/tf</tf_topic>
+
+      <frame_id>odom</frame_id>
+      <child_frame_id>base_footprint</child_frame_id>
+
+      <odom_publish_frequency>30</odom_publish_frequency>
+      <max_linear_acceleration>1.0</max_linear_acceleration>
+      <max_angular_acceleration>2.0</max_angular_acceleration>
+    </plugin>
+
+    <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+      <topic>/joint_states</topic>
+    </plugin>
+  </gazebo>
+
+  <!-- ================= RGB-D 相机 ================= -->
+  <link name="rgbd_camera_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.15"/>
+      <inertia ixx="0.0003" ixy="0.0" ixz="0.0"
+               iyy="0.0003" iyz="0.0"
+               izz="0.0003"/>
+    </inertial>
+
+    <visual name="rgbd_camera_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.06 0.04 0.04"/>
+      </geometry>
+      <material name="dark"/>
+    </visual>
+  </link>
+
+  <joint name="rgbd_camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="rgbd_camera_link"/>
+    <!-- 相机放在底盘前方偏上，朝机器人 x 正方向看 -->
+    <origin xyz="0.22 0 0.28" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ROS 相机光学坐标系：z 向前，x 向右，y 向下 -->
+  <link name="rgbd_camera_optical_frame"/>
+
+  <joint name="rgbd_camera_optical_joint" type="fixed">
+    <parent link="rgbd_camera_link"/>
+    <child link="rgbd_camera_optical_frame"/>
+    <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708"/>
+  </joint>
+
+  <gazebo reference="rgbd_camera_link">
+    <sensor name="rgbd_camera" type="rgbd_camera">
+      <pose>0 0 0 0 0 0</pose>
+      <always_on>true</always_on>
+      <update_rate>10</update_rate>
+      <visualize>true</visualize>
+
+      <topic>camera</topic>
+      <frame_name>rgbd_camera_optical_frame</frame_name>
+
+      <camera>
+        <horizontal_fov>1.3962634</horizontal_fov> <!-- 约 80 度 -->
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.20</near>
+          <far>6.0</far>
+        </clip>
+      </camera>
+    </sensor>
+  </gazebo>
+
+</robot>

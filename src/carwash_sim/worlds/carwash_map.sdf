@@ -1,0 +1,286 @@
+<?xml version='1.0' encoding='utf-8'?>
+<sdf version="1.8">
+  <world name="carwash_sp">
+    <physics name="1ms" type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+
+    <plugin filename="libignition-gazebo-physics-system.so" name="ignition::gazebo::systems::Physics" />
+    <plugin filename="libignition-gazebo-scene-broadcaster-system.so" name="ignition::gazebo::systems::SceneBroadcaster" />
+    <plugin filename="gz-sim-contact-system" name="gz::sim::systems::Contact" />
+    <plugin filename="ignition-gazebo-sensors-system" name="ignition::gazebo::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="ignition-gazebo-user-commands-system" name="ignition::gazebo::systems::UserCommands" />
+
+    <light type="directional" name="sun">
+      <pose>0 0 30 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    
+    <model name="floor">
+      <static>true</static>
+      <pose>2 0 -0.05 0 0 0</pose>
+      <link name="floor_link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>20 20 0.1</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>20 20 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.75 0.75 0.75 1</ambient>
+            <diffuse>0.75 0.75 0.75 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    
+    <model name="wall_north">
+      <static>true</static>
+      <pose>2 3.6 1 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>8 0.2 2</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>8 0.2 2</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.2 0.2 0.8 1</ambient>
+            <diffuse>0.2 0.2 0.8 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    
+    <model name="wall_west">
+      <static>true</static>
+      <pose>-2.1 0 1 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.2 7 2</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.2 7 2</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.2 0.2 0.8 1</ambient>
+            <diffuse>0.2 0.2 0.8 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    
+    <model name="wall_east">
+      <static>true</static>
+      <pose>6.1 0 1 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.2 7 2</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.2 7 2</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.2 0.2 0.8 1</ambient>
+            <diffuse>0.2 0.2 0.8 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    
+    <model name="washbay_marks">
+      <static>true</static>
+      <pose>0 0 0 0 0 0</pose>
+      <link name="marks_link">
+
+        
+        <visual name="center_guide_line_left">
+          <pose>0 -0.55 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.10 5.3 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 0 1</ambient>
+            <diffuse>1 1 0 1</diffuse>
+          </material>
+        </visual>
+
+        <visual name="left_guide_line_left">
+          <pose>-0.95 0.2 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.06 4.6 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+          </material>
+        </visual>
+
+        <visual name="right_guide_line_left">
+          <pose>0.95 0.2 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.06 4.6 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+          </material>
+        </visual>
+
+        <visual name="stop_line_left">
+          <pose>0 2.28 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>1.9 0.12 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 0.2 0.2 1</ambient>
+            <diffuse>1 0.2 0.2 1</diffuse>
+          </material>
+        </visual>
+
+        <visual name="entry_line_left">
+          <pose>0 -3.05 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>2.6 0.05 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+          </material>
+        </visual>
+
+        
+        <visual name="center_guide_line_right">
+          <pose>4 -0.55 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.10 5.3 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 0 1</ambient>
+            <diffuse>1 1 0 1</diffuse>
+          </material>
+        </visual>
+
+        <visual name="left_guide_line_right">
+          <pose>3.05 0.2 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.06 4.6 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+          </material>
+        </visual>
+
+        <visual name="right_guide_line_right">
+          <pose>4.95 0.2 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.06 4.6 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+          </material>
+        </visual>
+
+        <visual name="stop_line_right">
+          <pose>4 2.28 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>1.9 0.12 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 0.2 0.2 1</ambient>
+            <diffuse>1 0.2 0.2 1</diffuse>
+          </material>
+        </visual>
+
+        <visual name="entry_line_right">
+          <pose>4 -3.05 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>2.6 0.05 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+          </material>
+        </visual>
+
+        
+        <visual name="middle_yellow_band">
+          <pose>2 0 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.6 6.8 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 0 1</ambient>
+            <diffuse>1 1 0 1</diffuse>
+          </material>
+        </visual>
+
+      </link>
+    </model>
+
+    
+    </world>
+</sdf>

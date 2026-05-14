@@ -1,0 +1,82 @@
+# 洗车机器人第一版任务配置
+# 坐标全部使用 map 坐标系
+
+interaction_point:
+  # 场景交互点：机器人先导航到这里，然后自转扫描
+  x: 2.3
+  y: 5.3
+  yaw: 0.0
+
+local_scan:
+  # 自转扫描参数
+  enable: true
+  angular_speed: 0.03      # rad/s，建议 0.03~0.05
+  scan_time: 25.0          # 秒
+  stop_time: 1.0           # 扫描结束后停车等待
+
+washbay:
+  # 第一版先手动给工位中心和朝向
+  # 后面自动识别后，这几个值可以由点云拟合结果替代
+  center_x: 0.0
+  center_y: 0.0
+  yaw: 0.0                 # 工位朝向，单位 rad
+
+  # 标准工位尺寸，仅用于记录和检查
+  width: 4.0
+  length: 7.0
+
+patrol:
+  # 实际巡航矩形尺寸
+  width: 3.7
+  length: 6.7
+
+  # 每条边分成几个小段
+  # 例如 3 表示每条边会生成 3 个导航段，路径更像矩形
+  points_per_edge: 3
+
+  # 每到一个点停留多久，模拟洗车动作
+  wait_time: 1.5
+
+  # 朝向模式：
+  # path_direction：车头朝向行驶方向，适合雷达前向 120°
+  # face_center：车头始终朝向工位中心，适合喷头朝中心
+  face_mode: "path_direction"
+
+  # 是否跑完后回到交互点
+  return_to_interaction_point: false
+
+center_scan_mapping:
+  # 注意：这里不是 map 坐标，而是 odom 坐标。
+  # 模式 2 建图时还没有 map，所以不能用 map 坐标导航。
+  #
+  # 计算方法：
+  # target_x = 工位中心 world_x - 机器人出生 world_x
+  # target_y = 工位中心 world_y - 机器人出生 world_y
+  #
+  # 例如：
+  # 如果机器人出生在 x=0.2, y=-3.0
+  # 工位中心是 x=0.0, y=0.0
+  # 那么：
+  # target_x = -0.2
+  # target_y = 3.0
+
+  target_x: -1.8
+  target_y: 6.0
+  target_yaw: 0.0
+
+  # 到达中心点的允许误差
+  position_tolerance: 0.08
+  heading_tolerance: 0.08
+
+  # 自动前往中心点时的速度，不要太快，否则建图会乱
+  max_linear_speed: 0.08
+  max_angular_speed: 0.25
+
+  # 简单 P 控制参数
+  kp_linear: 0.45
+  kp_angular: 1.2
+
+  # 到中心点后的原地扫描参数
+  scan_angular_speed: 0.025
+  scan_time: 35.0
+  stop_time: 1.0

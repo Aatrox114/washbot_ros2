@@ -1,0 +1,324 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="carwash_sp">
+    <physics name="1ms" type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+
+    <plugin filename="libignition-gazebo-physics-system.so" name="ignition::gazebo::systems::Physics"/>
+    <plugin filename="libignition-gazebo-scene-broadcaster-system.so" name="ignition::gazebo::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-contact-system" name="gz::sim::systems::Contact"/>
+    <plugin filename="ignition-gazebo-sensors-system" name="ignition::gazebo::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="ignition-gazebo-user-commands-system" name="ignition::gazebo::systems::UserCommands"/>
+
+    <light type="directional" name="sun">
+      <pose>0 0 30 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <!-- 地面：在原 4x7 基础上向右扩建，最终覆盖 x=[-2,6], y=[-3.5,3.5] -->
+    <model name="floor">
+      <static>true</static>
+      <pose>2 0 -0.05 0 0 0</pose>
+      <link name="floor_link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>20 20 0.1</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>20 20 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.75 0.75 0.75 1</ambient>
+            <diffuse>0.75 0.75 0.75 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- 北墙：从原 4m 扩到 8m，中心平移到 x=2 -->
+    <model name="wall_north">
+      <static>true</static>
+      <pose>2 3.6 1 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>8 0.2 2</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>8 0.2 2</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.2 0.2 0.8 1</ambient>
+            <diffuse>0.2 0.2 0.8 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- 西墙：保持原位置不动 -->
+    <model name="wall_west">
+      <static>true</static>
+      <pose>-2.1 0 1 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.2 7 2</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.2 7 2</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.2 0.2 0.8 1</ambient>
+            <diffuse>0.2 0.2 0.8 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- 东墙：扩建后的最右侧外墙 -->
+    <model name="wall_east">
+      <static>true</static>
+      <pose>6.1 0 1 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.2 7 2</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.2 7 2</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.2 0.2 0.8 1</ambient>
+            <diffuse>0.2 0.2 0.8 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- 双工位标线：左工位保持原位，右工位整体平移 +4m；中间加 60cm 黄色粗线 -->
+    <model name="washbay_marks">
+      <static>true</static>
+      <pose>0 0 0 0 0 0</pose>
+      <link name="marks_link">
+
+        <!-- 左工位：完全保留原有标线位置 -->
+        <visual name="center_guide_line_left">
+          <pose>0 -0.55 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.10 5.3 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 0 1</ambient>
+            <diffuse>1 1 0 1</diffuse>
+          </material>
+        </visual>
+
+        <visual name="left_guide_line_left">
+          <pose>-0.95 0.2 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.06 4.6 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+          </material>
+        </visual>
+
+        <visual name="right_guide_line_left">
+          <pose>0.95 0.2 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.06 4.6 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+          </material>
+        </visual>
+
+        <visual name="stop_line_left">
+          <pose>0 2.28 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>1.9 0.12 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 0.2 0.2 1</ambient>
+            <diffuse>1 0.2 0.2 1</diffuse>
+          </material>
+        </visual>
+
+        <visual name="entry_line_left">
+          <pose>0 -3.05 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>2.6 0.05 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+          </material>
+        </visual>
+
+        <!-- 右工位：在左工位基础上整体向右复制 4m -->
+        <visual name="center_guide_line_right">
+          <pose>4 -0.55 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.10 5.3 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 0 1</ambient>
+            <diffuse>1 1 0 1</diffuse>
+          </material>
+        </visual>
+
+        <visual name="left_guide_line_right">
+          <pose>3.05 0.2 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.06 4.6 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+          </material>
+        </visual>
+
+        <visual name="right_guide_line_right">
+          <pose>4.95 0.2 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.06 4.6 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+          </material>
+        </visual>
+
+        <visual name="stop_line_right">
+          <pose>4 2.28 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>1.9 0.12 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 0.2 0.2 1</ambient>
+            <diffuse>1 0.2 0.2 1</diffuse>
+          </material>
+        </visual>
+
+        <visual name="entry_line_right">
+          <pose>4 -3.05 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>2.6 0.05 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+          </material>
+        </visual>
+
+        <!-- 中间分隔：把原中间墙改成 60cm 黄色粗线 -->
+        <visual name="middle_yellow_band">
+          <pose>2 0 0.001 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.6 6.8 0.002</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 1 0 1</ambient>
+            <diffuse>1 1 0 1</diffuse>
+          </material>
+        </visual>
+
+      </link>
+    </model>
+
+    <!-- 被洗车辆：完全保持你原来的位置和参数不动 -->
+    <model name="car">
+      <static>true</static>
+      <pose>-1.0 -3 0.75 0 0 0</pose>
+
+      <plugin filename="gz-sim-touchplugin-system"
+              name="gz::sim::systems::TouchPlugin">
+        <target>stl_test</target>
+        <namespace>car</namespace>
+        <time>0.001</time>
+        <enabled>true</enabled>
+      </plugin>
+
+      <link name="car_body">
+        <collision name="body_collision">
+          <geometry>
+            <box>
+              <size>5.0 1.9 1.5</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name="car_visual">
+          <pose>0 0 -0.8 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <uri>file:///home/yuandong/ros2_ws/src/carwash_sim/worlds/CADI-CT5.STL</uri>
+              <scale>0.025 0.024 0.024</scale>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+  </world>
+</sdf>

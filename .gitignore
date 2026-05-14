@@ -1,6 +1,22 @@
+# ROS2 build outputs
 build/
 install/
 log/
-*.pyc
+
+# Python cache
 __pycache__/
-.vscode/.browse.c_cpp.db*
+*.pyc
+
+# VS Code cache
+.vscode/.browse_c_cpp.db*
+.vscode/ipch/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# Runtime/debug outputs
+debug_maps/
+maps/
