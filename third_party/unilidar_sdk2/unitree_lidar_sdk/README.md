@@ -1,9 +1,7 @@
 sudo ip addr flush dev enp4s0
 sudo ip addr add 192.168.1.2/24 dev enp4s0
 sudo ip link set enp4s0 up
-
-
-
+sudo chmod 666 /dev/ttyACM0
 
 cd ~/unilidar_sdk2/unitree_lidar_sdk
 
