@@ -39,3 +39,9 @@ add_executable(set_to_udp_mode
 target_link_libraries(set_to_udp_mode  libunilidar_sdk2.a )
 add_executable(lidar_control_udp examples/lidar_control_udp.cpp)
 target_link_libraries(lidar_control_udp libunilidar_sdk2.a)
+
+add_executable(lidar_set_mode_udp examples/lidar_set_mode_udp.cpp)
+target_link_libraries(lidar_set_mode_udp libunilidar_sdk2.a)
+
+add_executable(lidar_control_serial examples/lidar_control_serial.cpp)
+target_link_libraries(lidar_control_serial libunilidar_sdk2.a)
